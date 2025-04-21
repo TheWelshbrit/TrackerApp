@@ -1,8 +1,167 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
+@model List<Tracker.Core.Models.DayRecord>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<h2>Day Records</h2>
+
+<form asp-action="Add" method="post">
+    <label for="recordDate">New Day:</label>
+    <input type="date" name="recordDate" required />
+    <button type="submit">Add Day</button>
+</form>
+
+<hr />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Note Count</th>
+            <th>Sleep Count</th>
+            <th>Food Count</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var record in Model.OrderByDescending(r => r.RecordDate))
+    {
+        <tr>
+            <td>@record.RecordDate</td>
+            <td>@record.MoodNotes.Count + @record.ContextNotes.Count</td>
+            <td>@record.SleepRecords.Count</td>
+            <td>@record.FoodRecords.Count</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+
+<h2>Daily Tracker Entries</h2>
+
+@foreach (var day in Model.OrderByDescending(d => d.RecordDate))
+{
+    <div style="border: 1px solid #ccc; margin: 1em 0; padding: 1em;">
+        <h3>@day.RecordDate</h3>
+
+        <h4>AI Summary</h4>
+        <p><strong>Quote:</strong> @day.AiDailyOverview?.AiQuote</p>
+        <p><strong>Note:</strong> @day.AiDailyOverview?.AiNote</p>
+
+        <h4>Mood Notes</h4>
+        <ul>
+            @foreach (var note in day.MoodNotes)
+            {
+                <li>@note.TimeNoteMade?.ToShortTimeString(): @note.Note</li>
+            }
+        </ul>
+
+        <h4>Context Notes</h4>
+        <ul>
+            @foreach (var note in day.ContextNotes)
+            {
+                <li>@note.TimeNoteMade?.ToShortTimeString(): @note.Note</li>
+            }
+        </ul>
+
+        <h4>Sleep</h4>
+        <ul>
+            @foreach (var s in day.SleepRecords)
+            {
+                <li>
+                    <strong>@s.SleepType</strong>: @s.SleepAttemptStartTime.ToShortTimeString() – @s.SleepAttemptEndTime.ToShortTimeString()  
+                    (Estimated sleep: @s.EstimatedActualSleepDuration hrs)  
+                    <em>@s.Note</em>
+                </li>
+            }
+        </ul>
+
+        <h4>Hygeine</h4>
+        <p>Teeth Cleaned: @string.Join(", ", day.Hygeine.TeethCleaningInstances.Select(t => t.ToShortTimeString()))</p>
+        <p>Shower Count: @day.Hygeine.ShowerInstances.Count</p>
+        <ul>
+            @foreach (var note in day.Hygeine.HygeineNotes)
+            {
+                <li>@note.TimeNoteMade?.ToShortTimeString(): @note.Note</li>
+            }
+        </ul>
+
+        <h4>Food</h4>
+        <ul>
+            @foreach (var f in day.FoodRecords)
+            {
+                <li><strong>@f.FoodType</strong>: @f.Food @f.TimeStartedEating?.ToShortTimeString() <em>@f.Note</em></li>
+            }
+        </ul>
+
+        <h4>Drinks</h4>
+        <ul>
+            @foreach (var d in day.DrinkRecords)
+            {
+                <li>@d.TimeStartedDrinking?.ToShortTimeString(): @d.quantity @d.QuantityMeasurement (@(d.Alcoholic ? $"Alcohol: {d.AlcoholPercentage}%" : "Non-alcoholic")) <em>@d.Note</em></li>
+            }
+        </ul>
+
+        <h4>Work</h4>
+        <p>Location: @day.Work.Location, Hours: @day.Work.TotalHours</p>
+        <ul>
+            @foreach (var note in day.Work.OverallNotes)
+            {
+                <li>@note.TimeNoteMade?.ToShortTimeString(): @note.Note</li>
+            }
+        </ul>
+        <ul>
+            @foreach (var activity in day.Work.WorkActivities)
+            {
+                <li>@activity.StartTime.ToShortTimeString()–@activity.EndTime.ToShortTimeString(): @activity.Activity <em>@activity.Note</em></li>
+            }
+        </ul>
+
+        <h4>Exercise</h4>
+        <ul>
+            @foreach (var ex in day.ExerciseSessions)
+            {
+                <li><strong>@ex.Type</strong>: @ex.Activity @ex.StartTime.ToShortTimeString()–@ex.EndTime.ToShortTimeString() <em>@ex.Note</em></li>
+            }
+        </ul>
+
+        <h4>Gaming</h4>
+        <ul>
+            @foreach (var g in day.GamingSessions)
+            {
+                <li>@g.Game: @g.StartTime.ToShortTimeString()–@g.EndTime.ToShortTimeString(), With: @string.Join(", ", g.PeoplePlayedWith) <em>@g.Note</em></li>
+            }
+        </ul>
+
+        <h4>Piano</h4>
+        <ul>
+            @foreach (var p in day.PianoRecords)
+            {
+                <li>@p.StartTime.ToShortTimeString()–@p.EndTime.ToShortTimeString(): @p.Activity <em>@p.Note</em></li>
+            }
+        </ul>
+
+        <h4>Chores</h4>
+        <ul>
+            @foreach (var c in day.ChoreActivities)
+            {
+                <li>@c.StartTime.ToShortTimeString()–@c.EndTime.ToShortTimeString(): @c.Activity <em>@c.Note</em></li>
+            }
+        </ul>
+
+        <h4>Chat with GPT</h4>
+        <ul>
+            @foreach (var chat in day.GptChatActivities)
+            {
+                <li>@chat.StartTime.ToShortTimeString()–@chat.EndTime.ToShortTimeString(): @chat.Activity <em>@chat.Note</em></li>
+            }
+        </ul>
+
+        <h4>Other</h4>
+        <ul>
+            @foreach (var o in day.OtherActivities)
+            {
+                <li>@o.StartTime.ToShortTimeString()–@o.EndTime.ToShortTimeString(): @o.Activity <em>@o.Note</em></li>
+            }
+        </ul>
+    </div>
+}

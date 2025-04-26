@@ -13,7 +13,7 @@ public class DayRecord
     public HygeineRecord Hygeine { get; set; } = new HygeineRecord();
     public List<FoodRecord> FoodRecords { get; set; } = new List<FoodRecord>();
     public List<DrinkRecord> DrinkRecords { get; set; } = new List<DrinkRecord>();
-    public WorkDayRecord Work { get; set; } = new WorkDayRecord();
+    public WorkDayRecord WorkDayRecord { get; set; } = new WorkDayRecord();
     public List<ExcerciseRecord> ExerciseSessions { get; set; } = new List<ExcerciseRecord>();
     public List<GamingRecord> GamingSessions { get; set; } = new List<GamingRecord>();
     public List<GenericActivity> PianoRecords { get; set; } = new List<GenericActivity>();
@@ -23,7 +23,7 @@ public class DayRecord
 }
 public class AiRecord
 {
-    DateTime TimeAiContributionGenerated { get; set; }
+    public DateTime TimeAiContributionGenerated { get; set; }
     public string AiQuote { get; set; } = string.Empty;
     public string AiNote { get; set; } = string.Empty;
 }
@@ -43,7 +43,7 @@ public enum SleepingType
 public class HygeineRecord
 {
     public List<ShowerActivity> ShowerInstances { get; set; }= new List<ShowerActivity>();
-    public List<DateTime> TeethCleaningInstances { get; set; } = new List<DateTime>();
+    public List<NoteRecord> TeethCleaningInstances { get; set; } = new List<NoteRecord>();
     public List<NoteRecord> HygeineNotes { get; set; } = new List<NoteRecord>();
 }
 public class FoodRecord
@@ -63,7 +63,8 @@ public enum FoodConsumptionType
 public class DrinkRecord
 {
     public DateTime? TimeStartedDrinking { get; set; }
-    public decimal quantity { get; set; }
+    public string Drink { get; set; }
+    public decimal Quantity { get; set; }
     public string QuantityMeasurement { get; set;} = string.Empty;
     public bool Alcoholic { get; set; }
     public decimal? AlcoholPercentage { get; set; }
@@ -75,6 +76,7 @@ public class ShowerActivity
     public DateTime? EndTime { get; set; }
     public bool ShavedBody { get; set; }
     public bool ShavedFace { get; set; }
+    public string Note { get; set; }
 }
 public class WorkDayRecord
 {

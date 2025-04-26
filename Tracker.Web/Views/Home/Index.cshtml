@@ -1,44 +1,157 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-@model List<Tracker.Core.Models.DayRecord>
+@model Tracker.Web.ViewModels.Home.IndexViewModel
 
-<h2>Day Records</h2>
+<style>
+.modal {
+    position: fixed;
+    z-index: 999;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+}
+.modal-content {
+    background: #fff;
+    padding: 1em;
+    margin: 10% auto;
+    width: 300px;
+    border-radius: 5px;
+}
+</style>
 
-<form asp-action="Add" method="post">
-    <label for="recordDate">New Day:</label>
-    <input type="date" name="recordDate" required />
-    <button type="submit">Add Day</button>
-</form>
+<h2>Day In Progress <a href="/Home/CompleteDayInProgress" class="btn btn-sm btn-outline-primary">Complete Day</a></h2>
+<div style="border: 2px dashed #ffa; margin: 2em 0; padding: 1em; background-color: #fffce0;">
+<div style="border: 1px solid #ccc; margin: 1em 0; padding: 1em;">
+        <h3>@Model.DayInProgress.RecordDate  <button onclick="openModal('ChangeDate', 'UpdateDayInProgressDate', 'Change Day In Progress Date')" class="btn btn-sm btn-outline-primary">Change Date</button></h3>
 
-<hr />
+        <h4>AI Summary</h4>
+        <p><strong>Quote:</strong> @Model.DayInProgress.AiDailyOverview?.AiQuote</p>
+        <p><strong>Note:</strong> @Model.DayInProgress.AiDailyOverview?.AiNote</p>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Date</th>
-            <th>Note Count</th>
-            <th>Sleep Count</th>
-            <th>Food Count</th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var record in Model.OrderByDescending(r => r.RecordDate))
-    {
-        <tr>
-            <td>@record.RecordDate</td>
-            <td>@record.MoodNotes.Count + @record.ContextNotes.Count</td>
-            <td>@record.SleepRecords.Count</td>
-            <td>@record.FoodRecords.Count</td>
-        </tr>
-    }
-    </tbody>
-</table>
+        <h4>Mood Notes <button onclick="openModal('NewNoteRecord', 'AddMoodNote', 'Add Mood Note')" class="btn btn-sm btn-outline-primary">+</button></h4>
+        <ul>
+            @foreach (var note in Model.DayInProgress.MoodNotes)
+            {
+                <li>@note.TimeNoteMade?.ToShortTimeString(): @note.Note</li>
+            }
+        </ul>
+
+        <h4>Context Notes <button onclick="openModal('NewNoteRecord', 'AddContextNote', 'Add Context Note')" class="btn btn-sm btn-outline-primary">+</button></h4>
+        <ul>
+            @foreach (var note in Model.DayInProgress.ContextNotes)
+            {
+                <li>@note.TimeNoteMade?.ToShortTimeString(): @note.Note</li>
+            }
+        </ul>
+
+        <h4>Sleep <button onclick="openModal('NewSleepRecord', 'AddSleepRecord', 'Add Sleep Record')" class="btn btn-sm btn-outline-primary">+</button></h4>
+        <ul>
+            @foreach (var s in Model.DayInProgress.SleepRecords)
+            {
+                <li>
+                    <strong>@s.SleepType</strong>: @s.SleepAttemptStartTime.ToShortTimeString() – @s.SleepAttemptEndTime.ToShortTimeString()  
+                    (Estimated sleep: @s.EstimatedActualSleepDuration hrs)  
+                    <em>@s.Note</em>
+                </li>
+            }
+        </ul>
+
+        <h4>Hygeine <button onclick="openModal('NewShowerActivity', 'AddShowerActivity', 'Add Shower Record')" class="btn btn-sm btn-outline-primary">+ Shower</button><button onclick="openModal('NewNoteRecord', 'AddToothBrushingActivity', 'Add Teeth Cleaning Record')" class="btn btn-sm btn-outline-primary">+ Teeth Cleaning</button><button onclick="openModal('NewNoteRecord', 'AddHygeineNote', 'Add General Hygeine Note')" class="btn btn-sm btn-outline-primary">+ Hygeine Note</button></h4>
+        <p>Teeth Cleaned: @string.Join(", ", Model.DayInProgress.Hygeine.TeethCleaningInstances.Select(t => ((DateTime)(t.TimeNoteMade ?? new DateTime()))))</p>
+        <p>Shower Count: @Model.DayInProgress.Hygeine.ShowerInstances.Count</p>
+        <ul>
+            @foreach (var note in Model.DayInProgress.Hygeine.HygeineNotes)
+            {
+                <li>@note.TimeNoteMade?.ToShortTimeString(): @note.Note</li>
+            }
+        </ul>
+
+        <h4>Food <button onclick="openModal('NewFoodRecord', 'AddFoodRecord', 'Add Food Record')" class="btn btn-sm btn-outline-primary">+</button></h4>
+        <ul>
+            @foreach (var f in Model.DayInProgress.FoodRecords)
+            {
+                <li><strong>@f.FoodType</strong>: @f.Food @f.TimeStartedEating?.ToShortTimeString() <em>@f.Note</em></li>
+            }
+        </ul>
+
+        <h4>Drinks <button onclick="openModal('NewDrinkRecord', 'AddDrinkRecord', 'Add Drink Record')" class="btn btn-sm btn-outline-primary">+</button></h4>
+        <ul>
+            @foreach (var d in Model.DayInProgress.DrinkRecords)
+            {
+                <li>@d.TimeStartedDrinking?.ToShortTimeString(): @d.Drink, @d.Quantity @d.QuantityMeasurement (@(d.Alcoholic ? $"Alcohol: {d.AlcoholPercentage}%" : "Non-alcoholic")) <em>@d.Note</em></li>
+            }
+        </ul>
+
+        <h4>Work <button onclick="openModal('NewGenericActivityRecord', 'AddWorkActivity', 'Add Work Record')" class="btn btn-sm btn-outline-primary">+</button></h4>
+        <p>Location: @Model.DayInProgress.WorkDayRecord.Location, Hours: @Model.DayInProgress.WorkDayRecord.TotalHours</p>
+        <ul>
+            @foreach (var note in Model.DayInProgress.WorkDayRecord.OverallNotes)
+            {
+                <li>@note.TimeNoteMade?.ToShortTimeString(): @note.Note</li>
+            }
+        </ul>
+        <ul>
+            @foreach (var activity in Model.DayInProgress.WorkDayRecord.WorkActivities)
+            {
+                <li>@activity.StartTime.ToShortTimeString()–@activity.EndTime.ToShortTimeString(): @activity.Activity <em>@activity.Note</em></li>
+            }
+        </ul>
+
+        <h4>Exercise <button onclick="openModal('NewExcerciseRecord', 'AddExcerciseActivity', 'Add Excercise Record')" class="btn btn-sm btn-outline-primary">+</button></h4>
+        <ul>
+            @foreach (var ex in Model.DayInProgress.ExerciseSessions)
+            {
+                <li><strong>@ex.Type</strong>: @ex.Activity @ex.StartTime.ToShortTimeString()–@ex.EndTime.ToShortTimeString() <em>@ex.Note</em></li>
+            }
+        </ul>
+
+        <h4>Gaming <button onclick="openModal('NewGamingRecord', 'AddGamingActivity', 'Add Gaming Record')" class="btn btn-sm btn-outline-primary">+</button></h4>
+        <ul>
+            @foreach (var g in Model.DayInProgress.GamingSessions)
+            {
+                <li>@g.Game: @g.StartTime.ToShortTimeString()–@g.EndTime.ToShortTimeString(), With: @string.Join(", ", g.PeoplePlayedWith) <em>@g.Note</em></li>
+            }
+        </ul>
+
+        <h4>Piano <button onclick="openModal('NewGenericActivityRecord', 'AddPianoActivity', 'Add Piano Record')" class="btn btn-sm btn-outline-primary">+</button></h4>
+        <ul>
+            @foreach (var p in Model.DayInProgress.PianoRecords)
+            {
+                <li>@p.StartTime.ToShortTimeString()–@p.EndTime.ToShortTimeString(): @p.Activity <em>@p.Note</em></li>
+            }
+        </ul>
+
+        <h4>Chores <button onclick="openModal('NewGenericActivityRecord', 'AddChoreActivity', 'Add Chore Record')" class="btn btn-sm btn-outline-primary">+</button></h4>
+        <ul>
+            @foreach (var c in Model.DayInProgress.ChoreActivities)
+            {
+                <li>@c.StartTime.ToShortTimeString()–@c.EndTime.ToShortTimeString(): @c.Activity <em>@c.Note</em></li>
+            }
+        </ul>
+
+        <h4>Chat with GPT <button onclick="openModal('NewGenericActivityRecord', 'AddGptChatActivity', 'Add GptChat Record')" class="btn btn-sm btn-outline-primary">+</button></h4>
+        <ul>
+            @foreach (var chat in Model.DayInProgress.GptChatActivities)
+            {
+                <li>@chat.StartTime.ToShortTimeString()–@chat.EndTime.ToShortTimeString(): @chat.Activity <em>@chat.Note</em></li>
+            }
+        </ul>
+
+        <h4>Other <button onclick="openModal('NewGenericActivityRecord', 'AddOtherActivity', 'Add Other Activity Record')" class="btn btn-sm btn-outline-primary">+</button></h4>
+        <ul>
+            @foreach (var o in Model.DayInProgress.OtherActivities)
+            {
+                <li>@o.StartTime.ToShortTimeString()–@o.EndTime.ToShortTimeString(): @o.Activity <em>@o.Note</em></li>
+            }
+        </ul>
+    </div>
+</div>
 
 
 <h2>Daily Tracker Entries</h2>
 
-@foreach (var day in Model.OrderByDescending(d => d.RecordDate))
+@foreach (var day in Model.DayRecords.OrderByDescending(d => d.RecordDate))
 {
     <div style="border: 1px solid #ccc; margin: 1em 0; padding: 1em;">
         <h3>@day.RecordDate</h3>
@@ -76,7 +189,7 @@
         </ul>
 
         <h4>Hygeine</h4>
-        <p>Teeth Cleaned: @string.Join(", ", day.Hygeine.TeethCleaningInstances.Select(t => t.ToShortTimeString()))</p>
+        <p>Teeth Cleaned: @string.Join(", ", day.Hygeine.TeethCleaningInstances.Select(t => ((DateTime)(t.TimeNoteMade ?? new DateTime())).ToShortTimeString()))</p>
         <p>Shower Count: @day.Hygeine.ShowerInstances.Count</p>
         <ul>
             @foreach (var note in day.Hygeine.HygeineNotes)
@@ -97,20 +210,20 @@
         <ul>
             @foreach (var d in day.DrinkRecords)
             {
-                <li>@d.TimeStartedDrinking?.ToShortTimeString(): @d.quantity @d.QuantityMeasurement (@(d.Alcoholic ? $"Alcohol: {d.AlcoholPercentage}%" : "Non-alcoholic")) <em>@d.Note</em></li>
+                <li>@d.TimeStartedDrinking?.ToShortTimeString(): @d.Drink, @d.Quantity @d.QuantityMeasurement (@(d.Alcoholic ? $"Alcohol: {d.AlcoholPercentage}%" : "Non-alcoholic")) <em>@d.Note</em></li>
             }
         </ul>
 
         <h4>Work</h4>
-        <p>Location: @day.Work.Location, Hours: @day.Work.TotalHours</p>
+        <p>Location: @day.WorkDayRecord.Location, Hours: @day.WorkDayRecord.TotalHours</p>
         <ul>
-            @foreach (var note in day.Work.OverallNotes)
+            @foreach (var note in day.WorkDayRecord.OverallNotes)
             {
                 <li>@note.TimeNoteMade?.ToShortTimeString(): @note.Note</li>
             }
         </ul>
         <ul>
-            @foreach (var activity in day.Work.WorkActivities)
+            @foreach (var activity in day.WorkDayRecord.WorkActivities)
             {
                 <li>@activity.StartTime.ToShortTimeString()–@activity.EndTime.ToShortTimeString(): @activity.Activity <em>@activity.Note</em></li>
             }
@@ -165,3 +278,261 @@
         </ul>
     </div>
 }
+
+<div id="ChangeDateModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h3 id="ChangeDateModalTitle">Change Day In Progress Date</h3>
+    <form id="ChangeDateForm" method="post" action="/Home/UpdateDayInProgressDate">
+      <label for="recordDate">New Date:</label>
+      <input type="date" id="recordDate" name="recordDate" required />
+
+      <div style="margin-top: 1em;">
+        <button type="submit">Update</button>
+        <button type="button" onclick="closeModal('ChangeDateModal')">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<div id="NewNoteRecordModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h3 id="NewNoteRecordModalTitle">Add Mood Note</h3>
+    <form id="NewNoteRecordForm" method="post">
+      <label for="noteText">Note:</label>
+      <input type="text" id="noteText" name="noteText" required />
+
+      <label for="noteTime">Time:</label>
+      <input type="time" id="noteTime" name="noteTime" />
+
+      <div style="margin-top: 1em;">
+        <button type="submit">Add</button>
+        <button type="button" onclick="closeModal('moodModal')">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- GenericActivity Modal (reused for Piano, Chores, GPT, Other, WorkActivities) -->
+<div id="NewGenericActivityRecordModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h3 id="NewGenericActivityRecordModalTitle">Add Activity</h3>
+    <form id="NewGenericActivityRecordForm" method="post">
+      <label for="activityText">Activity:</label>
+      <input type="text" id="activityText" name="activityText" required />
+
+      <label for="startTime">Start Time:</label>
+      <input type="time" id="startTime" name="startTime" />
+
+      <label for="endTime">End Time:</label>
+      <input type="time" id="endTime" name="endTime" />
+
+      <label for="note">Note:</label>
+      <input type="text" id="note" name="note" />
+
+      <div style="margin-top: 1em;">
+        <button type="submit">Add</button>
+        <button type="button" onclick="closeModal('NewGenericActivityRecordModal')">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Sleep Record Modal -->
+<div id="NewSleepRecordModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h3 id="NewSleepRecordModalTitle">Add Sleep Record</h3>
+    <form id="NewSleepRecordForm" method="post">
+      <label for="sleepType">Type:</label>
+      <select id="sleepType" name="sleepType">
+        <option value="Sleep">Sleep</option>
+        <option value="Nap">Nap</option>
+      </select>
+
+      <label for="start">Start Time:</label>
+      <input type="time" id="start" name="start" />
+
+      <label for="end">End Time:</label>
+      <input type="time" id="end" name="end" />
+
+      <label for="duration">Estimated Sleep (hrs):</label>
+      <input type="number" step="0.01" id="duration" name="duration" />
+
+      <label for="note">Note:</label>
+      <input type="text" id="note" name="Note" />
+
+      <div style="margin-top: 1em;">
+        <button type="submit">Add</button>
+        <button type="button" onclick="closeModal('NewSleepRecordModal')">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Food Record Modal -->
+<div id="NewFoodRecordModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h3 id="NewFoodRecordModalTitle">Add Food</h3>
+    <form id="NewFoodRecordForm" method="post">
+      <label for="foodType">Type:</label>
+      <select id="foodType" name="FoodType">
+        <option value="Breakfast">Breakfast</option>
+        <option value="Lunch">Lunch</option>
+        <option value="Tea">Tea</option>
+        <option value="Snack">Snack</option>
+      </select>
+
+      <label for="food">Food:</label>
+      <input type="text" id="food" name="food" required />
+
+      <label for="time">Time:</label>
+      <input type="time" id="time" name="time" />
+
+      <label for="note">Note:</label>
+      <input type="text" id="note" name="Note" />
+
+      <div style="margin-top: 1em;">
+        <button type="submit">Add</button>
+        <button type="button" onclick="closeModal('NewFoodRecordModal')">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Drink Record Modal -->
+<div id="NewDrinkRecordModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h3 id="NewDrinkRecordModalTitle">Add Drink</h3>
+    <form id="NewDrinkRecordForm" method="post">
+      <label for="time">Time:</label>
+      <input type="time" id="time" name="TimeStartedDrinking" />
+
+      <label for="note">Drink:</label>
+      <input type="text" id="drink" name="drink" />
+      <br/>
+      <label for="quantity">Quantity:</label>
+      <input type="number" step="0.01" id="quantity" name="Quantity" />
+      <br/>
+      <label for="measurement">Measurement:</label>
+      <input type="text" id="measurement" name="QuantityMeasurement" />
+      <br/>
+      <label for="alcoholic">Alcoholic:</label>
+      <select id="alcoholic" name="Alcoholic">
+        <option value="false">No</option>
+        <option value="true">Yes</option>
+      </select>
+      <br/>
+      <label for="abv">Alcohol % (if any):</label>
+      <input type="number" step="0.1" id="abv" name="AlcoholPercentage" />
+      <br/>
+      <label for="note">Note:</label>
+      <input type="text" id="note" name="Note" />
+      <br/>
+      <div style="margin-top: 1em;">
+        <button type="submit">Add</button>
+        <button type="button" onclick="closeModal('NewDrinkRecordModal')">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Exercise Record Modal -->
+<div id="NewExcerciseRecordModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h3 id="NewExcerciseRecordModalTitle">Add Exercise</h3>
+    <form id="NewExcerciseRecordForm" method="post">
+      <label for="type">Type:</label>
+      <input type="text" id="type" name="type" required />
+
+      <label for="activity">Activity:</label>
+      <input type="text" id="activity" name="activity" required />
+
+      <label for="start">Start Time:</label>
+      <input type="time" id="start" name="start" />
+
+      <label for="end">End Time:</label>
+      <input type="time" id="end" name="end" />
+
+      <label for="note">Note:</label>
+      <input type="text" id="note" name="note" />
+
+      <div style="margin-top: 1em;">
+        <button type="submit">Add</button>
+        <button type="button" onclick="closeModal('NewExcerciseRecordModal')">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Gaming Record Modal -->
+<div id="NewGamingRecordModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h3 id="NewGamingRecordModalTitle">Add Gaming</h3>
+    <form id="NewGamingRecordForm" method="post">
+      <label for="game">Game:</label>
+      <input type="text" id="game" name="game" required />
+
+      <label for="start">Start Time:</label>
+      <input type="time" id="start" name="start" />
+
+      <label for="end">End Time:</label>
+      <input type="time" id="end" name="end" />
+
+      <label for="people">People Played With (comma-separated):</label>
+      <input type="text" id="people" name="people" />
+
+      <label for="note">Note:</label>
+      <input type="text" id="note" name="note" />
+
+      <div style="margin-top: 1em;">
+        <button type="submit">Add</button>
+        <button type="button" onclick="closeModal('NewGamingRecordModal')">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="NewShowerActivityModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h3 id="NewShowerActivityModalTitle">Add Shower Activity</h3>
+    <form id="NewShowerActivityForm" method="post">
+      <label for="startTime">Start Time:</label>
+      <input type="time" id="start" name="start">
+
+      <label for="endTime">End Time:</label>
+      <input type="time" id="end" name="end">
+
+      <label>
+        <input type="checkbox" id="shavedBody" name="shavedBody">
+        Shaved Body
+      </label><br>
+
+      <label>
+        <input type="checkbox" id="shavedFace" name="shavedFace">
+        Shaved Face
+      </label><br>
+      
+      <label for="note">Note:</label>
+      <input type="text" id="note" name="note" />
+
+      <div style="margin-top: 1em;">
+        <button type="submit">Add</button>
+        <button type="button" onclick="closeModal('NewShowerActivityModal')">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+function openModal(id, endpoint, title) {
+    const modal = document.getElementById(`${id}Modal`);
+    const form = document.getElementById(`${id}Form`);
+    const titleElement = document.getElementById(`${id}ModalTitle`);
+
+    modal.style.display = 'block';
+    form.action = `/Home/${endpoint}`;
+    titleElement.innerText = title;    
+}
+function closeModal(id) {
+    document.getElementById(id).style.display = 'none';
+}
+</script>

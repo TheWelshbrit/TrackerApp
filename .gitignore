@@ -479,3 +479,4 @@ $RECYCLE.BIN/
 
 # Ignore app data
 Tracker.Web/days.json
+Tracker.Web/DayInProgress.json

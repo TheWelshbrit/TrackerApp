@@ -6,5 +6,7 @@ public interface IDayRecordRepository
 {
     List<DayRecord> GetAllRecords();
     void AddRecord(DayRecord record);
-    void Save();
+    void SaveDays();
+    DayRecord GetDayInProgress();
+    void UpdateDayInProgress(DayRecord updatedRecord);
 }

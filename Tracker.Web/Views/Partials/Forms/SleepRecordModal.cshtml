@@ -1,0 +1,17 @@
+<!-- Sleep Record Modal -->
+<div id="NewSleepRecordModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h3 id="NewSleepRecordModalTitle">Add Sleep Record</h3>
+    <form id="NewSleepRecordForm" method="post">
+      @Html.Partial("~/Views/Partials/Forms/InputFields/OptionSetPicker.cshtml", new OptionSetPickerViewModel("sleepType", "Type:", ["Sleep", "Nap"]))
+      <br/>
+      @Html.Partial("~/Views/Partials/Forms/InputFields/DateTimeInput.cshtml", new DateTimeInputViewModel("start", "Start Time:", "end", "End Time"))
+      <br/>
+      @Html.Partial("~/Views/Partials/Forms/InputFields/DecimalInput.cshtml", new GenericInputViewModel("duration", "Estimated Sleep (hrs):"))
+      <br/>
+      @Html.Partial("~/Views/Partials/Forms/InputFields/TextInput.cshtml", new GenericInputViewModel("note", "Note:"))
+      <br/>
+      @Html.Partial("~/Views/Partials/Forms/InputFields/AddOrCloseButtons.cshtml", new AddOrCloseButtonsViewModel("NewSleepRecordModal"))
+    </form>
+  </div>
+</div>

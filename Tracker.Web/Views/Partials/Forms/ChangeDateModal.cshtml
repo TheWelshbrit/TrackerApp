@@ -1,0 +1,12 @@
+<!-- Change Date Modal -->
+
+<div id="ChangeDateModal" class="modal" style="display:none;">
+    <div class="modal-content">
+        <h3 id="ChangeDateModalTitle">Change Day In Progress Date</h3>
+        <form id="ChangeDateForm" method="post" action="/Home/UpdateDayInProgressDate">
+            @Html.Partial("~/Views/Partials/Forms/InputFields/DateOnlyInput.cshtml", new DateOnlyInputViewModel("recordDate", "New Date:"))
+            <br/>
+            @Html.Partial("~/Views/Partials/Forms/InputFields/AddOrCloseButtons.cshtml", new AddOrCloseButtonsViewModel("ChangeDateModal", "Set Date"))
+        </form>
+    </div>
+</div>

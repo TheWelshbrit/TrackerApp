@@ -1,0 +1,25 @@
+<!-- Drink Record Modal -->
+<div id="NewDrinkRecordModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h3 id="NewDrinkRecordModalTitle">Add Drink</h3>
+    <form id="NewDrinkRecordForm" method="post">
+
+        @Html.Partial("~/Views/Partials/Forms/InputFields/DateTimeInput.cshtml", new DateTimeInputViewModel("timeStartedDrinking", "Time Started Drinking:"))
+        <br/>
+        @Html.Partial("~/Views/Partials/Forms/InputFields/TextInput.cshtml", new GenericInputViewModel("drink", "Drink:"))
+        <br/>
+        @Html.Partial("~/Views/Partials/Forms/InputFields/DecimalInput.cshtml", new GenericInputViewModel("quantity", "Quantity:"))
+        <br/>
+        @Html.Partial("~/Views/Partials/Forms/InputFields/TextInput.cshtml", new GenericInputViewModel("quantityMeasurement", "Measurement:"))
+        <br/>
+        @Html.Partial("~/Views/Partials/Forms/InputFields/CheckboxInput.cshtml", new GenericInputViewModel("alcoholic", "Alcoholic:"))
+        <br/>
+        @Html.Partial("~/Views/Partials/Forms/InputFields/DecimalInput.cshtml", new GenericInputViewModel("alcoholPercentage", "Alcohol % (if any):"))
+        <br/>
+        @Html.Partial("~/Views/Partials/Forms/InputFields/TextInput.cshtml", new GenericInputViewModel("note", "Note:"))
+        <br/>
+        @Html.Partial("~/Views/Partials/Forms/InputFields/AddOrCloseButtons.cshtml", new AddOrCloseButtonsViewModel("NewDrinkRecordModal"))
+
+    </form>
+  </div>
+</div>

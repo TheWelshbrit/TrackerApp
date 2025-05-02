@@ -1,0 +1,13 @@
+<!-- #region NoteRecordModal.cshtml -->
+<div id="NewNoteRecordModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h3 id="NewNoteRecordModalTitle">Add Mood Note</h3>
+    <form id="NewNoteRecordForm" method="post">
+      @Html.Partial("~/Views/Partials/Forms/InputFields/TextInput.cshtml", new GenericInputViewModel("noteText", "Note:"))
+      <br/>
+      @Html.Partial("~/Views/Partials/Forms/InputFields/DateTimeInput.cshtml", new DateTimeInputViewModel("noteTime", "Time:"))
+      <br/>
+      @Html.Partial("~/Views/Partials/Forms/InputFields/AddOrCloseButtons.cshtml", new AddOrCloseButtonsViewModel("NewNoteRecordModal"))
+    </form>
+  </div>
+</div>

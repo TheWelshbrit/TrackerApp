@@ -1,0 +1,11 @@
+@model Tracker.Web.ViewModels.Partials.Forms.InputFields.DateTimeInputViewModel
+
+<label for="@Model.StartTimeName">@Model.StartTimeLabel</label>
+<input type="datetime-local" id="@Model.StartTimeName" name="@Model.StartTimeName" value="@Model.StartTimeValue"/>
+
+@if(Model.IncludeEndTime)
+{
+    <br/>
+    <label for="@Model.EndTimeName">@Model.EndTimeLabel</label>
+    <input type="datetime-local" id="@Model.EndTimeName" name="@Model.EndTimeName" value="@Model.EndTimeValue"/>
+}

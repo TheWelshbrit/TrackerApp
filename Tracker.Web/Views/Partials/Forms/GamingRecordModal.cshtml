@@ -1,0 +1,17 @@
+<!-- Gaming Record Modal -->
+<div id="NewGamingRecordModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h3 id="NewGamingRecordModalTitle">Add Gaming</h3>
+    <form id="NewGamingRecordForm" method="post">
+        @Html.Partial("~/Views/Partials/Forms/InputFields/TextInput.cshtml", new GenericInputViewModel("game", "Game:"))
+        <br/>
+        @Html.Partial("~/Views/Partials/Forms/InputFields/DateTimeInput.cshtml", new DateTimeInputViewModel("startGameTime", "Start Time:", "endGameTime", "End Time"))
+        <br/>
+        @Html.Partial("~/Views/Partials/Forms/InputFields/TextInput.cshtml", new GenericInputViewModel("people", "People Played With (comma-separated):"))
+        <br/>
+        @Html.Partial("~/Views/Partials/Forms/InputFields/TextInput.cshtml", new GenericInputViewModel("note", "Note:"))
+        <br/>
+        @Html.Partial("~/Views/Partials/Forms/InputFields/AddOrCloseButtons.cshtml", new AddOrCloseButtonsViewModel("NewGamingRecordModal"))
+    </form>
+  </div>
+</div>

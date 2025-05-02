@@ -1,0 +1,13 @@
+<!-- GenericInstanceRecordModal.cshtml -->
+<div id="NewGenericInstanceRecordModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h3 id="NewGenericInstanceRecordModalTitle">Add Activity</h3>
+    <form id="NewGenericInstanceRecordForm" method="post">
+      @Html.Partial("~/Views/Partials/Forms/InputFields/DateTimeInput.cshtml", new DateTimeInputViewModel("startGenericInstanceTime", "Start Time:", "endGenericInstanceTime", "End Time"))
+      <br/>
+      @Html.Partial("~/Views/Partials/Forms/InputFields/TextInput.cshtml", new GenericInputViewModel("genericInstanceNoteText", "Note:"))
+      <br/>
+      @Html.Partial("~/Views/Partials/Forms/InputFields/AddOrCloseButtons.cshtml", new AddOrCloseButtonsViewModel("NewGenericInstanceRecordModal"))
+    </form>
+  </div>
+</div>

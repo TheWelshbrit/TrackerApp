@@ -1,0 +1,36 @@
+<!-- #region DataEntryModals.cshtml -->
+@Html.Partial("~/Views/Partials/Forms/ChangeDateModal.cshtml")
+
+@Html.Partial("~/Views/Partials/Forms/NoteRecordModal.cshtml")
+ @* , new DateTimeInputViewModel("noteTime", "Time:") *@
+
+@Html.Partial("~/Views/Partials/Forms/GenericActivityModal.cshtml")
+
+@Html.Partial("~/Views/Partials/Forms/SleepRecordModal.cshtml")
+
+@Html.Partial("~/Views/Partials/Forms/FoodRecordModal.cshtml")
+
+@Html.Partial("~/Views/Partials/Forms/DrinkRecordModal.cshtml")
+
+@Html.Partial("~/Views/Partials/Forms/ExcerciseRecordModal.cshtml")
+
+@Html.Partial("~/Views/Partials/Forms/GamingRecordModal.cshtml")
+
+@Html.Partial("~/Views/Partials/Forms/ShowerActivityModal.cshtml")
+
+@Html.Partial("~/Views/Partials/Forms/GenericInstanceRecordModal.cshtml")
+
+<script>
+function openModal(id, endpoint, title) {
+    const modal = document.getElementById(`${id}Modal`);
+    const form = document.getElementById(`${id}Form`);
+    const titleElement = document.getElementById(`${id}ModalTitle`);
+
+    modal.style.display = 'block';
+    form.action = `/Home/${endpoint}`;
+    titleElement.innerText = title;    
+}
+function closeModal(id) {
+    document.getElementById(id).style.display = 'none';
+}
+</script>

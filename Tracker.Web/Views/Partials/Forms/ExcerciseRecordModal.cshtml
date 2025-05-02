@@ -1,0 +1,18 @@
+
+<!-- Exercise Record Modal -->
+<div id="NewExcerciseRecordModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h3 id="NewExcerciseRecordModalTitle">Add Exercise</h3>
+    <form id="NewExcerciseRecordForm" method="post">
+        @Html.Partial("~/Views/Partials/Forms/InputFields/OptionSetPicker.cshtml", new OptionSetPickerViewModel("type", "Type:", ["Cardio", "Flexibility", "HIIT Circuit", "Strength", "Casual"]))
+        <br/>
+        @Html.Partial("~/Views/Partials/Forms/InputFields/TextInput.cshtml", new GenericInputViewModel("activity", "Activity:"))
+        <br/>
+        @Html.Partial("~/Views/Partials/Forms/InputFields/DateTimeInput.cshtml", new DateTimeInputViewModel("startExcerciseTime", "Start Time:", "endExcerciseTime", "End Time"))
+        <br/>
+        @Html.Partial("~/Views/Partials/Forms/InputFields/TextInput.cshtml", new GenericInputViewModel("note", "Note:"))
+        <br/>
+        @Html.Partial("~/Views/Partials/Forms/InputFields/AddOrCloseButtons.cshtml", new AddOrCloseButtonsViewModel("NewExcerciseRecordModal"))
+    </form>
+  </div>
+</div>

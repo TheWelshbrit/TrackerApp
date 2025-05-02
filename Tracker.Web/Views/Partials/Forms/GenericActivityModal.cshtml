@@ -1,0 +1,15 @@
+<!-- GenericActivity Modal (reused for Piano, Chores, GPT, Other, WorkActivities) -->
+<div id="NewGenericActivityRecordModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h3 id="NewGenericActivityRecordModalTitle">Add Activity</h3>
+    <form id="NewGenericActivityRecordForm" method="post">
+      @Html.Partial("~/Views/Partials/Forms/InputFields/TextInput.cshtml", new GenericInputViewModel("activityText", "Activity:"))
+      <br/>
+      @Html.Partial("~/Views/Partials/Forms/InputFields/DateTimeInput.cshtml", new DateTimeInputViewModel("startTime", "Start Time:", "endTime", "End Time"))
+      <br/>
+      @Html.Partial("~/Views/Partials/Forms/InputFields/TextInput.cshtml", new GenericInputViewModel("note", "Note:"))
+      <br/>
+      @Html.Partial("~/Views/Partials/Forms/InputFields/AddOrCloseButtons.cshtml", new AddOrCloseButtonsViewModel("NewGenericActivityRecordModal"))
+    </form>
+  </div>
+</div>

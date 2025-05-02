@@ -1,0 +1,17 @@
+<!-- Food Record Modal -->
+<div id="NewFoodRecordModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h3 id="NewFoodRecordModalTitle">Add Food</h3>
+    <form id="NewFoodRecordForm" method="post">
+      @Html.Partial("~/Views/Partials/Forms/InputFields/OptionSetPicker.cshtml", new OptionSetPickerViewModel("foodType", "Type:", ["Breakfast", "Lunch", "Tea", "Snack"]))
+      <br/>
+      @Html.Partial("~/Views/Partials/Forms/InputFields/TextInput.cshtml", new GenericInputViewModel("food", "Food:"))
+      <br/>
+      @Html.Partial("~/Views/Partials/Forms/InputFields/DateTimeInput.cshtml", new DateTimeInputViewModel("timeStartedEating", "Time Started Eating:", "timeFinishedEating", "Time Finished Eating:"))
+      <br/>
+      @Html.Partial("~/Views/Partials/Forms/InputFields/TextInput.cshtml", new GenericInputViewModel("note", "Note:"))
+      <br/>
+      @Html.Partial("~/Views/Partials/Forms/InputFields/AddOrCloseButtons.cshtml", new AddOrCloseButtonsViewModel("NewFoodRecordModal"))
+    </form>
+  </div>
+</div>

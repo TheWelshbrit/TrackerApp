@@ -22,7 +22,7 @@
 
 <h2>Day In Progress <a href="/Home/CompleteDayInProgress" class="btn btn-sm btn-outline-primary">Complete Day</a></h2>
 <div style="border: 2px dashed #ffa; margin: 2em 0; padding: 1em; background-color: #fffce0;">
-<div style="border: 1px solid #ccc; margin: 1em 0; padding: 1em;">
+    <div style="border: 1px solid #ccc; margin: 1em 0; padding: 1em;">
         <h3>@Model.DayInProgress.RecordDate  <button onclick="openModal('ChangeDate', 'UpdateDayInProgressDate', 'Change Day In Progress Date')" class="btn btn-sm btn-outline-primary">Change Date</button></h3>
 
         <h4>AI Summary</h4>
@@ -57,8 +57,8 @@
             }
         </ul>
 
-        <h4>Hygeine <button onclick="openModal('NewShowerActivity', 'AddShowerActivity', 'Add Shower Record')" class="btn btn-sm btn-outline-primary">+ Shower</button><button onclick="openModal('NewNoteRecord', 'AddToothBrushingActivity', 'Add Teeth Cleaning Record')" class="btn btn-sm btn-outline-primary">+ Teeth Cleaning</button><button onclick="openModal('NewNoteRecord', 'AddHygeineNote', 'Add General Hygeine Note')" class="btn btn-sm btn-outline-primary">+ Hygeine Note</button></h4>
-        <p>Teeth Cleaned: @string.Join(", ", Model.DayInProgress.Hygeine.TeethCleaningInstances.Select(t => ((DateTime)(t.TimeNoteMade ?? new DateTime()))))</p>
+        <h4>Hygeine <button onclick="openModal('NewShowerActivity', 'AddShowerActivity', 'Add Shower Record')" class="btn btn-sm btn-outline-primary">+ Shower</button><button onclick="openModal('NewGenericInstanceRecord', 'AddToothBrushingActivity', 'Add Teeth Cleaning Record')" class="btn btn-sm btn-outline-primary">+ Teeth Cleaning</button><button onclick="openModal('NewNoteRecord', 'AddHygeineNote', 'Add General Hygeine Note')" class="btn btn-sm btn-outline-primary">+ Hygeine Note</button></h4>
+        <p>Teeth Cleaned: @string.Join(", ", Model.DayInProgress.Hygeine.TeethCleaningInstances.Select(t => $"[{((DateTime)(t.TimeStarted ?? new DateTime())).ToShortTimeString()} => {((DateTime)(t.TimeEnded ?? new DateTime())).ToShortTimeString()} : {t.Note}]"))</p>
         <p>Shower Count: @Model.DayInProgress.Hygeine.ShowerInstances.Count</p>
         <ul>
             @foreach (var note in Model.DayInProgress.Hygeine.HygeineNotes)
@@ -189,7 +189,7 @@
         </ul>
 
         <h4>Hygeine</h4>
-        <p>Teeth Cleaned: @string.Join(", ", day.Hygeine.TeethCleaningInstances.Select(t => ((DateTime)(t.TimeNoteMade ?? new DateTime())).ToShortTimeString()))</p>
+        <p>Teeth Cleaned: @string.Join(", ", day.Hygeine.TeethCleaningInstances.Select(t => $"[{((DateTime)(t.TimeStarted ?? new DateTime())).ToShortTimeString()} => {((DateTime)(t.TimeEnded ?? new DateTime())).ToShortTimeString()} : {t.Note}]"))</p>
         <p>Shower Count: @day.Hygeine.ShowerInstances.Count</p>
         <ul>
             @foreach (var note in day.Hygeine.HygeineNotes)
@@ -279,260 +279,4 @@
     </div>
 }
 
-<div id="ChangeDateModal" class="modal" style="display:none;">
-  <div class="modal-content">
-    <h3 id="ChangeDateModalTitle">Change Day In Progress Date</h3>
-    <form id="ChangeDateForm" method="post" action="/Home/UpdateDayInProgressDate">
-      <label for="recordDate">New Date:</label>
-      <input type="date" id="recordDate" name="recordDate" required />
-
-      <div style="margin-top: 1em;">
-        <button type="submit">Update</button>
-        <button type="button" onclick="closeModal('ChangeDateModal')">Cancel</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-
-<div id="NewNoteRecordModal" class="modal" style="display:none;">
-  <div class="modal-content">
-    <h3 id="NewNoteRecordModalTitle">Add Mood Note</h3>
-    <form id="NewNoteRecordForm" method="post">
-      <label for="noteText">Note:</label>
-      <input type="text" id="noteText" name="noteText" required />
-
-      <label for="noteTime">Time:</label>
-      <input type="time" id="noteTime" name="noteTime" />
-
-      <div style="margin-top: 1em;">
-        <button type="submit">Add</button>
-        <button type="button" onclick="closeModal('moodModal')">Cancel</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<!-- GenericActivity Modal (reused for Piano, Chores, GPT, Other, WorkActivities) -->
-<div id="NewGenericActivityRecordModal" class="modal" style="display:none;">
-  <div class="modal-content">
-    <h3 id="NewGenericActivityRecordModalTitle">Add Activity</h3>
-    <form id="NewGenericActivityRecordForm" method="post">
-      <label for="activityText">Activity:</label>
-      <input type="text" id="activityText" name="activityText" required />
-
-      <label for="startTime">Start Time:</label>
-      <input type="time" id="startTime" name="startTime" />
-
-      <label for="endTime">End Time:</label>
-      <input type="time" id="endTime" name="endTime" />
-
-      <label for="note">Note:</label>
-      <input type="text" id="note" name="note" />
-
-      <div style="margin-top: 1em;">
-        <button type="submit">Add</button>
-        <button type="button" onclick="closeModal('NewGenericActivityRecordModal')">Cancel</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<!-- Sleep Record Modal -->
-<div id="NewSleepRecordModal" class="modal" style="display:none;">
-  <div class="modal-content">
-    <h3 id="NewSleepRecordModalTitle">Add Sleep Record</h3>
-    <form id="NewSleepRecordForm" method="post">
-      <label for="sleepType">Type:</label>
-      <select id="sleepType" name="sleepType">
-        <option value="Sleep">Sleep</option>
-        <option value="Nap">Nap</option>
-      </select>
-
-      <label for="start">Start Time:</label>
-      <input type="time" id="start" name="start" />
-
-      <label for="end">End Time:</label>
-      <input type="time" id="end" name="end" />
-
-      <label for="duration">Estimated Sleep (hrs):</label>
-      <input type="number" step="0.01" id="duration" name="duration" />
-
-      <label for="note">Note:</label>
-      <input type="text" id="note" name="Note" />
-
-      <div style="margin-top: 1em;">
-        <button type="submit">Add</button>
-        <button type="button" onclick="closeModal('NewSleepRecordModal')">Cancel</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<!-- Food Record Modal -->
-<div id="NewFoodRecordModal" class="modal" style="display:none;">
-  <div class="modal-content">
-    <h3 id="NewFoodRecordModalTitle">Add Food</h3>
-    <form id="NewFoodRecordForm" method="post">
-      <label for="foodType">Type:</label>
-      <select id="foodType" name="FoodType">
-        <option value="Breakfast">Breakfast</option>
-        <option value="Lunch">Lunch</option>
-        <option value="Tea">Tea</option>
-        <option value="Snack">Snack</option>
-      </select>
-
-      <label for="food">Food:</label>
-      <input type="text" id="food" name="food" required />
-
-      <label for="time">Time:</label>
-      <input type="time" id="time" name="time" />
-
-      <label for="note">Note:</label>
-      <input type="text" id="note" name="Note" />
-
-      <div style="margin-top: 1em;">
-        <button type="submit">Add</button>
-        <button type="button" onclick="closeModal('NewFoodRecordModal')">Cancel</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<!-- Drink Record Modal -->
-<div id="NewDrinkRecordModal" class="modal" style="display:none;">
-  <div class="modal-content">
-    <h3 id="NewDrinkRecordModalTitle">Add Drink</h3>
-    <form id="NewDrinkRecordForm" method="post">
-      <label for="time">Time:</label>
-      <input type="time" id="time" name="TimeStartedDrinking" />
-
-      <label for="note">Drink:</label>
-      <input type="text" id="drink" name="drink" />
-      <br/>
-      <label for="quantity">Quantity:</label>
-      <input type="number" step="0.01" id="quantity" name="Quantity" />
-      <br/>
-      <label for="measurement">Measurement:</label>
-      <input type="text" id="measurement" name="QuantityMeasurement" />
-      <br/>
-      <label for="alcoholic">Alcoholic:</label>
-      <select id="alcoholic" name="Alcoholic">
-        <option value="false">No</option>
-        <option value="true">Yes</option>
-      </select>
-      <br/>
-      <label for="abv">Alcohol % (if any):</label>
-      <input type="number" step="0.1" id="abv" name="AlcoholPercentage" />
-      <br/>
-      <label for="note">Note:</label>
-      <input type="text" id="note" name="Note" />
-      <br/>
-      <div style="margin-top: 1em;">
-        <button type="submit">Add</button>
-        <button type="button" onclick="closeModal('NewDrinkRecordModal')">Cancel</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<!-- Exercise Record Modal -->
-<div id="NewExcerciseRecordModal" class="modal" style="display:none;">
-  <div class="modal-content">
-    <h3 id="NewExcerciseRecordModalTitle">Add Exercise</h3>
-    <form id="NewExcerciseRecordForm" method="post">
-      <label for="type">Type:</label>
-      <input type="text" id="type" name="type" required />
-
-      <label for="activity">Activity:</label>
-      <input type="text" id="activity" name="activity" required />
-
-      <label for="start">Start Time:</label>
-      <input type="time" id="start" name="start" />
-
-      <label for="end">End Time:</label>
-      <input type="time" id="end" name="end" />
-
-      <label for="note">Note:</label>
-      <input type="text" id="note" name="note" />
-
-      <div style="margin-top: 1em;">
-        <button type="submit">Add</button>
-        <button type="button" onclick="closeModal('NewExcerciseRecordModal')">Cancel</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<!-- Gaming Record Modal -->
-<div id="NewGamingRecordModal" class="modal" style="display:none;">
-  <div class="modal-content">
-    <h3 id="NewGamingRecordModalTitle">Add Gaming</h3>
-    <form id="NewGamingRecordForm" method="post">
-      <label for="game">Game:</label>
-      <input type="text" id="game" name="game" required />
-
-      <label for="start">Start Time:</label>
-      <input type="time" id="start" name="start" />
-
-      <label for="end">End Time:</label>
-      <input type="time" id="end" name="end" />
-
-      <label for="people">People Played With (comma-separated):</label>
-      <input type="text" id="people" name="people" />
-
-      <label for="note">Note:</label>
-      <input type="text" id="note" name="note" />
-
-      <div style="margin-top: 1em;">
-        <button type="submit">Add</button>
-        <button type="button" onclick="closeModal('NewGamingRecordModal')">Cancel</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<div id="NewShowerActivityModal" class="modal" style="display:none;">
-  <div class="modal-content">
-    <h3 id="NewShowerActivityModalTitle">Add Shower Activity</h3>
-    <form id="NewShowerActivityForm" method="post">
-      <label for="startTime">Start Time:</label>
-      <input type="time" id="start" name="start">
-
-      <label for="endTime">End Time:</label>
-      <input type="time" id="end" name="end">
-
-      <label>
-        <input type="checkbox" id="shavedBody" name="shavedBody">
-        Shaved Body
-      </label><br>
-
-      <label>
-        <input type="checkbox" id="shavedFace" name="shavedFace">
-        Shaved Face
-      </label><br>
-      
-      <label for="note">Note:</label>
-      <input type="text" id="note" name="note" />
-
-      <div style="margin-top: 1em;">
-        <button type="submit">Add</button>
-        <button type="button" onclick="closeModal('NewShowerActivityModal')">Cancel</button>
-      </div>
-    </form>
-  </div>
-</div>
-<script>
-function openModal(id, endpoint, title) {
-    const modal = document.getElementById(`${id}Modal`);
-    const form = document.getElementById(`${id}Form`);
-    const titleElement = document.getElementById(`${id}ModalTitle`);
-
-    modal.style.display = 'block';
-    form.action = `/Home/${endpoint}`;
-    titleElement.innerText = title;    
-}
-function closeModal(id) {
-    document.getElementById(id).style.display = 'none';
-}
-</script>
+@Html.Partial("~/Views/Partials/DataEntryModals.cshtml")

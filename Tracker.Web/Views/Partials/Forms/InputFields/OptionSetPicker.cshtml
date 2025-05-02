@@ -1,0 +1,9 @@
+@model Tracker.Web.ViewModels.Partials.Forms.InputFields.OptionSetPickerViewModel
+
+<label for="@Model.InputName">@Model.InputLabel</label>
+<select id="@Model.InputName" name="@Model.InputName">
+    @foreach(var option in Model.Options)
+    {
+        <option value="@option">@option</option>
+    }
+</select>

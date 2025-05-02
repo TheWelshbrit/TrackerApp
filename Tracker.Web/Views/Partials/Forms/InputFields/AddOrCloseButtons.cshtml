@@ -1,0 +1,6 @@
+@model Tracker.Web.ViewModels.Partials.Forms.InputFields.AddOrCloseButtonsViewModel
+
+<div style="margin-top: 1em;">
+    <button type="submit">@Model.AddButtonLabel</button>
+    <button type="button" onclick="closeModal('@Model.ModalId')">@Model.CloseButtonLabel</button>
+</div>

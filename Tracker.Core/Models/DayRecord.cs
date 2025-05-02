@@ -43,7 +43,7 @@ public enum SleepingType
 public class HygeineRecord
 {
     public List<ShowerActivity> ShowerInstances { get; set; }= new List<ShowerActivity>();
-    public List<NoteRecord> TeethCleaningInstances { get; set; } = new List<NoteRecord>();
+    public List<InstanceRecord> TeethCleaningInstances { get; set; } = new List<InstanceRecord>();
     public List<NoteRecord> HygeineNotes { get; set; } = new List<NoteRecord>();
 }
 public class FoodRecord
@@ -51,6 +51,7 @@ public class FoodRecord
     public FoodConsumptionType FoodType { get; set; }
     public string Food { get; set; } = string.Empty;
     public DateTime? TimeStartedEating { get; set; }
+    public DateTime? TimeFinishedEating { get; set; }
     public string? Note { get; set; }
 }
 public enum FoodConsumptionType
@@ -115,5 +116,11 @@ public class GenericActivity
 public class NoteRecord
 {
     public DateTime? TimeNoteMade { get; set; }
+    public string Note { get; set; } = string.Empty;
+}
+public class InstanceRecord
+{
+    public DateTime? TimeStarted { get; set; }
+    public DateTime? TimeEnded { get; set; }
     public string Note { get; set; } = string.Empty;
 }

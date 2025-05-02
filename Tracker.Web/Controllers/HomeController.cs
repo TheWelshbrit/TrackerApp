@@ -61,14 +61,14 @@ public class HomeController : Controller
 
 
     [HttpPost]
-    public IActionResult AddMoodNote(string noteText, string noteTime)
+    public IActionResult AddMoodNote(string noteText, DateTime noteTime)
     {
         var current = _repo.GetDayInProgress();
 
         current.MoodNotes.Add(new NoteRecord
         {
             Note = noteText,
-            TimeNoteMade = ParseTime(noteTime)
+            TimeNoteMade = noteTime
         });
 
         _repo.UpdateDayInProgress(current);
@@ -76,14 +76,15 @@ public class HomeController : Controller
     }
     
     [HttpPost]
-    public IActionResult AddToothBrushingActivity(string noteText, string noteTime)
+    public IActionResult AddToothBrushingActivity(string genericInstanceNoteText, DateTime startGenericInstanceTime, DateTime endGenericInstanceTime)
     {
         var current = _repo.GetDayInProgress();
 
-        current.Hygeine.TeethCleaningInstances.Add(new NoteRecord
+        current.Hygeine.TeethCleaningInstances.Add(new InstanceRecord
         {
-            Note = noteText,
-            TimeNoteMade = ParseTime(noteTime)
+            TimeStarted = startGenericInstanceTime,
+            TimeEnded = endGenericInstanceTime,
+            Note = genericInstanceNoteText
         });
 
         _repo.UpdateDayInProgress(current);
@@ -92,14 +93,14 @@ public class HomeController : Controller
 
         
     [HttpPost]
-    public IActionResult AddHygeineNote(string noteText, string noteTime)
+    public IActionResult AddHygeineNote(string noteText, DateTime noteTime)
     {
         var current = _repo.GetDayInProgress();
 
         current.Hygeine.HygeineNotes.Add(new NoteRecord
         {
             Note = noteText,
-            TimeNoteMade = ParseTime(noteTime)
+            TimeNoteMade = noteTime
         });
 
         _repo.UpdateDayInProgress(current);
@@ -107,14 +108,14 @@ public class HomeController : Controller
     }
 
     [HttpPost]
-    public IActionResult AddContextNote(string noteText, string noteTime)
+    public IActionResult AddContextNote(string noteText, DateTime noteTime)
     {
         var current = _repo.GetDayInProgress();
 
         current.ContextNotes.Add(new NoteRecord
         {
             Note = noteText,
-            TimeNoteMade = ParseTime(noteTime)
+            TimeNoteMade = noteTime
         });
 
         _repo.UpdateDayInProgress(current);
@@ -122,7 +123,7 @@ public class HomeController : Controller
     }
 
     [HttpPost]
-    public IActionResult AddSleepRecord(string sleepType, string start, string end, decimal duration, string note)
+    public IActionResult AddSleepRecord(string sleepType, DateTime start, DateTime end, decimal duration, string note)
     {
         var current = _repo.GetDayInProgress();
 
@@ -131,8 +132,8 @@ public class HomeController : Controller
         current.SleepRecords.Add(new SleepRecord
         {
             SleepType = sleepTypeEnum,
-            SleepAttemptStartTime = ParseTime(start),
-            SleepAttemptEndTime = ParseTime(end),
+            SleepAttemptStartTime = start,
+            SleepAttemptEndTime = end,
             EstimatedActualSleepDuration = duration,
             Note = note
         });
@@ -142,7 +143,7 @@ public class HomeController : Controller
     }
     
     [HttpPost]
-    public IActionResult AddFoodRecord(string foodType, string food, string time, string note)
+    public IActionResult AddFoodRecord(string foodType, string food, DateTime timeStartedEating, DateTime timeFinishedEating, string note)
     {
         var current = _repo.GetDayInProgress();
 
@@ -152,7 +153,8 @@ public class HomeController : Controller
         {
             FoodType = foodTypeEnum,
             Food = food,
-            TimeStartedEating = ParseTime(time),
+            TimeStartedEating = timeStartedEating,
+            TimeFinishedEating = timeFinishedEating,
             Note = note
         });
 
@@ -161,17 +163,17 @@ public class HomeController : Controller
     }
 
     [HttpPost]
-    public IActionResult AddDrinkRecord(string drink, string time, decimal quantity, string quantityMeasurement, bool alcoholic, decimal alcoholPercentage, string note)
+    public IActionResult AddDrinkRecord(string drink, DateTime timeStartedDrinking, decimal quantity, string quantityMeasurement, string alcoholic, decimal alcoholPercentage, string note)
     {
         var current = _repo.GetDayInProgress();
 
         current.DrinkRecords.Add(new DrinkRecord
         {
-            TimeStartedDrinking = ParseTime(time),
+            TimeStartedDrinking = timeStartedDrinking,
             Drink = drink,
             Quantity = quantity,
             QuantityMeasurement = quantityMeasurement,
-            Alcoholic = alcoholic,
+            Alcoholic = (alcoholic == "on"),
             AlcoholPercentage = alcoholPercentage,
             Note = note
         });
@@ -181,16 +183,16 @@ public class HomeController : Controller
     }
 
     [HttpPost]
-    public IActionResult AddShowerActivity(string start, string end, bool shavedBody, bool shavedFace, string note)
+    public IActionResult AddShowerActivity(DateTime startShowerTime, DateTime endShowerTime, string shavedBody, string shavedFace, string note)
     {
         var current = _repo.GetDayInProgress();
 
         current.Hygeine.ShowerInstances.Add(new ShowerActivity
         {
-            StartTime = ParseTime(start),
-            EndTime = ParseTime(end),
-            ShavedBody = shavedBody,
-            ShavedFace = shavedFace,
+            StartTime = startShowerTime,
+            EndTime = endShowerTime,
+            ShavedBody = (shavedBody == "on"),
+            ShavedFace = (shavedFace == "on"),
             Note = note
         });
 
@@ -199,7 +201,7 @@ public class HomeController : Controller
     }
 
     [HttpPost]
-    public IActionResult AddGamingActivity(string start, string end, string game, string people, string note)
+    public IActionResult AddGamingActivity(DateTime startGameTime, DateTime endGameTime, string game, string people, string note)
     {
         var current = _repo.GetDayInProgress();
         var peopleList = (people == string.Empty) ? new List<string>() 
@@ -207,8 +209,8 @@ public class HomeController : Controller
 
         current.GamingSessions.Add(new GamingRecord
         {
-            StartTime = ParseTime(start),
-            EndTime = ParseTime(end),
+            StartTime = startGameTime,
+            EndTime = endGameTime,
             Game = game,
             PeoplePlayedWith = peopleList,
             Note = note
@@ -219,14 +221,14 @@ public class HomeController : Controller
     }
 
     [HttpPost]
-    public IActionResult AddExcerciseActivity(string type, string activity, string start, string end, string note)
+    public IActionResult AddExcerciseActivity(string type, string activity, DateTime startExcerciseTime, DateTime endExcerciseTime, string note)
     {
         var current = _repo.GetDayInProgress();
 
         current.ExerciseSessions.Add(new ExcerciseRecord
         {
-            StartTime = ParseTime(start),
-            EndTime = ParseTime(end),
+            StartTime = startExcerciseTime,
+            EndTime = endExcerciseTime,
             Activity = activity,
             Type = type,
             Note = note
@@ -241,7 +243,7 @@ public class HomeController : Controller
 
     #region Add GenericActivity items
     [HttpPost]
-    public IActionResult AddWorkActivity(string activityText, string startTime, string endTime, string note)
+    public IActionResult AddWorkActivity(string activityText, DateTime startTime, DateTime endTime, string note)
     {
         var current = _repo.GetDayInProgress();
 
@@ -252,7 +254,7 @@ public class HomeController : Controller
     }
 
     [HttpPost]
-    public IActionResult AddPianoActivity(string activityText, string startTime, string endTime, string note)
+    public IActionResult AddPianoActivity(string activityText, DateTime startTime, DateTime endTime, string note)
     {
         var current = _repo.GetDayInProgress();
 
@@ -263,7 +265,7 @@ public class HomeController : Controller
     }
 
     [HttpPost]
-    public IActionResult AddChoreActivity(string activityText, string startTime, string endTime, string note)
+    public IActionResult AddChoreActivity(string activityText, DateTime startTime, DateTime endTime, string note)
     {
         var current = _repo.GetDayInProgress();
 
@@ -274,7 +276,7 @@ public class HomeController : Controller
     }
 
     [HttpPost]
-    public IActionResult AddGptChatActivity(string activityText, string startTime, string endTime, string note)
+    public IActionResult AddGptChatActivity(string activityText, DateTime startTime, DateTime endTime, string note)
     {
         var current = _repo.GetDayInProgress();
 
@@ -285,7 +287,7 @@ public class HomeController : Controller
     }
 
     [HttpPost]
-    public IActionResult AddOtherActivity(string activityText, string startTime, string endTime, string note)
+    public IActionResult AddOtherActivity(string activityText, DateTime startTime, DateTime endTime, string note)
     {
         var current = _repo.GetDayInProgress();
 
@@ -305,13 +307,13 @@ public class HomeController : Controller
                     ? DateTime.Now
                     : DateTime.Today.Add(TimeSpan.Parse(timeString));
     }
-    private GenericActivity NewGenericActivity(string activityText, string startTime, string endTime, string note)
+    private GenericActivity NewGenericActivity(string activityText, DateTime startTime, DateTime endTime, string note)
     {
         return new GenericActivity
         {
             Activity = activityText,
-            StartTime = ParseTime(startTime),
-            EndTime = ParseTime(endTime),
+            StartTime = startTime,
+            EndTime = endTime,
             Note = note
         };
     }

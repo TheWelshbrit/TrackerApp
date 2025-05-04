@@ -1,0 +1,9 @@
+@model Tracker.Web.ViewModels.Partials.RecordDisplays.GenericActivityRecordsDisplayViewModel
+
+<@Model.GenericActivityRecordsDisplayTitleDomTag>@Model.GenericActivityRecordsDisplayTitle @if(Model.AllowEdit){<button onclick="openModal('NewGenericActivityRecord', '@Model.AddEditGenericActivityEndpoint', '@Model.AddEditGenericActivityModalTitle')" class="btn btn-sm btn-outline-primary">@Model.AddGenericActivityButtonLabel</button>}</@Model.GenericActivityRecordsDisplayTitleDomTag>
+<ul>
+    @foreach (var ga in Model.GenericActivityRecords)
+    {
+        <li>@ga.StartTime.ToShortTimeString()–@ga.EndTime.ToShortTimeString(): @ga.Activity - <em>@ga.Note</em></li>
+    }
+</ul>

@@ -1,0 +1,9 @@
+@model Tracker.Web.ViewModels.Partials.RecordDisplays.NoteRecordsDisplayViewModel
+
+<@Model.NoteRecordsDisplayTitleDomTag>@Model.NoteRecordsDisplayTitle @if(Model.AllowEdit){<button onclick="openModal('NewNoteRecord', '@Model.AddEditNoteEndpoint', '@Model.AddEditNoteModalTitle')" class="btn btn-sm btn-outline-primary">@Model.AddNoteButtonLabel</button>}</@Model.NoteRecordsDisplayTitleDomTag>
+<ul>
+    @foreach (var note in Model.NoteRecords)
+    {
+        <li>@note.TimeNoteMade?.ToShortTimeString(): @note.Note</li>
+    }
+</ul>

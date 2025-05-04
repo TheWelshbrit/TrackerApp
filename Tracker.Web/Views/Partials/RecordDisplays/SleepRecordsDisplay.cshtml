@@ -1,0 +1,13 @@
+@model Tracker.Web.ViewModels.Partials.RecordDisplays.SleepRecordsDisplayViewModel
+
+<h4>Sleep @if(Model.AllowEdit){<button onclick="openModal('NewSleepRecord', 'AddSleepRecord', 'Add Sleep Record')" class="btn btn-sm btn-outline-primary">+</button>}</h4>
+<ul>
+    @foreach (var s in Model.SleepRecords)
+    {
+        <li>
+            <strong>@s.SleepType</strong>: @s.SleepAttemptStartTime.ToShortTimeString() – @s.SleepAttemptEndTime.ToShortTimeString()  
+            (Estimated sleep: @s.EstimatedActualSleepDuration hrs)  
+            <em>@s.Note</em>
+        </li>
+    }
+</ul>

@@ -1,0 +1,9 @@
+@model Tracker.Web.ViewModels.Partials.RecordDisplays.InstanceRecordsDisplayViewModel
+
+<@Model.GenericInstanceRecordsDisplayTitleDomTag>@Model.GenericInstanceRecordsDisplayTitle @if(Model.AllowEdit){<button onclick="openModal('NewGenericInstanceRecord', '@Model.AddEditGenericInstanceEndpoint', '@Model.AddEditGenericInstanceModalTitle')" class="btn btn-sm btn-outline-primary">@Model.AddGenericInstanceButtonLabel</button>}</@Model.GenericInstanceRecordsDisplayTitleDomTag>
+<ul>
+    @foreach (var GenericInstance in Model.GenericInstanceRecords)
+    {
+        <li>@GenericInstance.GenerateDisplayString()</li>
+    }
+</ul>

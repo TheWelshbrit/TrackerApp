@@ -1,0 +1,9 @@
+@model Tracker.Web.ViewModels.Partials.RecordDisplays.FoodRecordsDisplayViewModel
+
+<h4>Food @if(Model.AllowEdit){<button onclick="openModal('NewFoodRecord', 'AddFoodRecord', 'Add Food Record')" class="btn btn-sm btn-outline-primary">+</button>}</h4>
+<ul>
+    @foreach (var f in Model.FoodRecords)
+    {
+        <li><strong>@f.FoodType</strong>: @f.Food @f.TimeStartedEating?.ToShortTimeString() <em>@f.Note</em></li>
+    }
+</ul>

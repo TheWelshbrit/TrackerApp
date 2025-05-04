@@ -14,7 +14,7 @@ public class DayRecord
     public List<FoodRecord> FoodRecords { get; set; } = new List<FoodRecord>();
     public List<DrinkRecord> DrinkRecords { get; set; } = new List<DrinkRecord>();
     public WorkDayRecord WorkDayRecord { get; set; } = new WorkDayRecord();
-    public List<ExcerciseRecord> ExerciseSessions { get; set; } = new List<ExcerciseRecord>();
+    public List<ExerciseRecord> ExerciseSessions { get; set; } = new List<ExerciseRecord>();
     public List<GamingRecord> GamingSessions { get; set; } = new List<GamingRecord>();
     public List<GenericActivity> PianoRecords { get; set; } = new List<GenericActivity>();
     public List<GenericActivity> ChoreActivities { get; set; } = new List<GenericActivity>();
@@ -83,12 +83,13 @@ public class WorkDayRecord
 {
     public string Location { get; set; } = string.Empty;
     public decimal TotalHours { get; set; }
+    public bool HoursOverridden { get; set; }
     public List<NoteRecord> OverallNotes { get; set; } = new List<NoteRecord>();
     public List<GenericActivity> WorkActivities { get; set; } = new List<GenericActivity>();
 }
 
 
-public class ExcerciseRecord
+public class ExerciseRecord
 {
     public string Type { get; set; }
     public string Activity { get; set; } = string.Empty;

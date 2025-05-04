@@ -1,0 +1,10 @@
+@model Tracker.Web.ViewModels.Partials.RecordDisplays.GamingRecordsDisplayViewModel
+
+
+<h4>Gaming @if(Model.AllowEdit){<button onclick="openModal('NewGamingRecord', 'AddGamingActivity', 'Add Gaming Record')" class="btn btn-sm btn-outline-primary">+</button>}</h4>
+<ul>
+    @foreach (var g in Model.GamingRecords)
+    {
+        <li>@g.Game: @g.StartTime.ToShortTimeString()–@g.EndTime.ToShortTimeString(), With: @string.Join(", ", g.PeoplePlayedWith) <em>@g.Note</em></li>
+    }
+</ul>

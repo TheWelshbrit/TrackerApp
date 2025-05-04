@@ -1,0 +1,5 @@
+@model Tracker.Web.ViewModels.Partials.RecordDisplays.AiRecordDisplayViewModel
+
+<h4>AI Summary @if(Model.AllowEdit){<button onclick="openModal('AiSummary', 'UpdateAiRecord', 'Update AI Summary')" class="btn btn-sm btn-outline-primary">Update AI Summary</button>}</h4>
+<p><strong>Quote:</strong><br/>@Model.Record?.AiQuote</p>
+<p><strong>Note:</strong><br/>@Model.Record?.AiNote</p>

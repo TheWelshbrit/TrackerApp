@@ -1,0 +1,6 @@
+@model Tracker.Web.ViewModels.Partials.RecordDisplays.WorkRecordDisplayViewModel
+
+<h4>Work @if(Model.AllowEdit){<button onclick="openModal('WorkLocationAndHours', 'UpdateWorkLocationAndHours', 'Update Location and Hours')" class="btn btn-sm btn-outline-primary">Set Location and Hours</button>}</h4>
+<p>Location: @Model.WorkRecord.Location, Hours: @Model.WorkRecord.TotalHours @if(Model.WorkRecord.HoursOverridden){@Html.Raw("(Overridden)")}</p>
+@Html.Partial("~/Views/Partials/RecordDisplays/NoteRecordsDisplay.cshtml", new NoteRecordsDisplayViewModel($"General Work Note Count: {Model.WorkRecord.OverallNotes.Count}", "AddWorkNote", "Add General Work Note", Model.AllowEdit, Model.WorkRecord.OverallNotes, "p", "+ General Note"))
+@Html.Partial("~/Views/Partials/RecordDisplays/GenericActivityRecordsDisplay.cshtml", new GenericActivityRecordsDisplayViewModel($"Work Activity Count: {Model.WorkRecord.WorkActivities.Count}", "AddWorkActivity", "Add Work Record", Model.AllowEdit, Model.WorkRecord.WorkActivities, "p", "+ Work Activity Record"))

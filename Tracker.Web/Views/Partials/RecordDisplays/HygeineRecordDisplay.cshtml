@@ -1,0 +1,31 @@
+@model Tracker.Web.ViewModels.Partials.RecordDisplays.HygeineRecordDisplayViewModel
+
+<h4>Hygeine</h4>
+<p>Shower Count: @Model.Record.ShowerInstances.Count @if(Model.AllowEdit){<button onclick="openModal('NewShowerActivity', 'AddShowerActivity', 'Add Shower Record')" class="btn btn-sm btn-outline-primary">+ Shower</button>}</p>
+<ul>
+    @foreach (var showerInstance in Model.Record.ShowerInstances)
+    {
+        <li>@showerInstance.GenerateDisplayString()</li>
+    }
+</ul>
+@Html.Partial("~/Views/Partials/RecordDisplays/InstanceRecordsDisplay.cshtml", new InstanceRecordsDisplayViewModel($"Teeth Cleaning Count: {Model.Record.TeethCleaningInstances.Count}", "AddToothBrushingActivity", "Add Teeth Cleaning Record", Model.AllowEdit, Model.Record.TeethCleaningInstances, "p", "+ Teeth Cleaning"))
+@Html.Partial("~/Views/Partials/RecordDisplays/NoteRecordsDisplay.cshtml", new NoteRecordsDisplayViewModel($"Note Count: {Model.Record.HygeineNotes.Count}", "AddHygeineNote", "Add General Hygeine Note", Model.AllowEdit, Model.Record.HygeineNotes, "p", "+ Hygeine Note"))
+
+
+
+@*
+ @(
+    (Model.ShavedBody && Model.ShavedFace)
+        ? " - Shaved: Body + Face"
+        : (
+            (Model.ShavedBody)
+                ? " - Shaved: Body"
+                : (
+                    (Model.ShavedFace)
+                        ? " - Shaved : Face"
+                        : ""
+                )
+        )
+ )
+ @((Model.ShavedBody && Model.ShavedFace)?" - Shaved: Body + Face":((Model.ShavedBody)?" - Shaved: Body":((Model.ShavedFace)?" - Shaved : Face":"")))
+*@

@@ -4,126 +4,20 @@
     <div style="border: 1px solid #ccc; margin: 1em 0; padding: 1em;">
         <h3>@Model.Record.RecordDate  @if(Model.AllowEdit){<button onclick="openModal('ChangeDate', 'UpdateDayInProgressDate', 'Change Day In Progress Date')" class="btn btn-sm btn-outline-primary">Change Date</button>}</h3>
 
-        <h4>AI Summary</h4>
-        <p><strong>Quote:</strong> @Model.Record.AiDailyOverview?.AiQuote</p>
-        <p><strong>Note:</strong> @Model.Record.AiDailyOverview?.AiNote</p>
-
-        <h4>Mood Notes @if(Model.AllowEdit){<button onclick="openModal('NewNoteRecord', 'AddMoodNote', 'Add Mood Note')" class="btn btn-sm btn-outline-primary">+</button>}</h4>
-        <ul>
-            @foreach (var note in Model.Record.MoodNotes)
-            {
-                <li>@note.TimeNoteMade?.ToShortTimeString(): @note.Note</li>
-            }
-        </ul>
-
-        <h4>Context Notes @if(Model.AllowEdit){<button onclick="openModal('NewNoteRecord', 'AddContextNote', 'Add Context Note')" class="btn btn-sm btn-outline-primary">+</button>}</h4>
-        <ul>
-            @foreach (var note in Model.Record.ContextNotes)
-            {
-                <li>@note.TimeNoteMade?.ToShortTimeString(): @note.Note</li>
-            }
-        </ul>
-
-        <h4>Sleep @if(Model.AllowEdit){<button onclick="openModal('NewSleepRecord', 'AddSleepRecord', 'Add Sleep Record')" class="btn btn-sm btn-outline-primary">+</button>}</h4>
-        <ul>
-            @foreach (var s in Model.Record.SleepRecords)
-            {
-                <li>
-                    <strong>@s.SleepType</strong>: @s.SleepAttemptStartTime.ToShortTimeString() – @s.SleepAttemptEndTime.ToShortTimeString()  
-                    (Estimated sleep: @s.EstimatedActualSleepDuration hrs)  
-                    <em>@s.Note</em>
-                </li>
-            }
-        </ul>
-
-        <h4>Hygeine @if(Model.AllowEdit){<button onclick="openModal('NewShowerActivity', 'AddShowerActivity', 'Add Shower Record')" class="btn btn-sm btn-outline-primary">+ Shower</button><button onclick="openModal('NewGenericInstanceRecord', 'AddToothBrushingActivity', 'Add Teeth Cleaning Record')" class="btn btn-sm btn-outline-primary">+ Teeth Cleaning</button><button onclick="openModal('NewNoteRecord', 'AddHygeineNote', 'Add General Hygeine Note')" class="btn btn-sm btn-outline-primary">+ Hygeine Note</button>}</h4>
-        <p>Teeth Cleaned: @string.Join(", ", Model.Record.Hygeine.TeethCleaningInstances.Select(t => $"[{((DateTime)(t.TimeStarted ?? new DateTime())).ToShortTimeString()} => {((DateTime)(t.TimeEnded ?? new DateTime())).ToShortTimeString()} : {t.Note}]"))</p>
-        <p>Shower Count: @Model.Record.Hygeine.ShowerInstances.Count</p>
-        <ul>
-            @foreach (var note in Model.Record.Hygeine.HygeineNotes)
-            {
-                <li>@note.TimeNoteMade?.ToShortTimeString(): @note.Note</li>
-            }
-        </ul>
-
-        <h4>Food @if(Model.AllowEdit){<button onclick="openModal('NewFoodRecord', 'AddFoodRecord', 'Add Food Record')" class="btn btn-sm btn-outline-primary">+</button>}</h4>
-        <ul>
-            @foreach (var f in Model.Record.FoodRecords)
-            {
-                <li><strong>@f.FoodType</strong>: @f.Food @f.TimeStartedEating?.ToShortTimeString() <em>@f.Note</em></li>
-            }
-        </ul>
-
-        <h4>Drinks @if(Model.AllowEdit){<button onclick="openModal('NewDrinkRecord', 'AddDrinkRecord', 'Add Drink Record')" class="btn btn-sm btn-outline-primary">+</button>}</h4>
-        <ul>
-            @foreach (var d in Model.Record.DrinkRecords)
-            {
-                <li>@d.TimeStartedDrinking?.ToShortTimeString(): @d.Drink, @d.Quantity @d.QuantityMeasurement (@(d.Alcoholic ? $"Alcohol: {d.AlcoholPercentage}%" : "Non-alcoholic")) <em>@d.Note</em></li>
-            }
-        </ul>
-
-        <h4>Work @if(Model.AllowEdit){<button onclick="openModal('NewGenericActivityRecord', 'AddWorkActivity', 'Add Work Record')" class="btn btn-sm btn-outline-primary">+</button>}</h4>
-        <p>Location: @Model.Record.WorkDayRecord.Location, Hours: @Model.Record.WorkDayRecord.TotalHours</p>
-        <ul>
-            @foreach (var note in Model.Record.WorkDayRecord.OverallNotes)
-            {
-                <li>@note.TimeNoteMade?.ToShortTimeString(): @note.Note</li>
-            }
-        </ul>
-        <ul>
-            @foreach (var activity in Model.Record.WorkDayRecord.WorkActivities)
-            {
-                <li>@activity.StartTime.ToShortTimeString()–@activity.EndTime.ToShortTimeString(): @activity.Activity <em>@activity.Note</em></li>
-            }
-        </ul>
-
-        <h4>Exercise @if(Model.AllowEdit){<button onclick="openModal('NewExcerciseRecord', 'AddExcerciseActivity', 'Add Excercise Record')" class="btn btn-sm btn-outline-primary">+</button>}</h4>
-        <ul>
-            @foreach (var ex in Model.Record.ExerciseSessions)
-            {
-                <li><strong>@ex.Type</strong>: @ex.Activity @ex.StartTime.ToShortTimeString()–@ex.EndTime.ToShortTimeString() <em>@ex.Note</em></li>
-            }
-        </ul>
-
-        <h4>Gaming @if(Model.AllowEdit){<button onclick="openModal('NewGamingRecord', 'AddGamingActivity', 'Add Gaming Record')" class="btn btn-sm btn-outline-primary">+</button>}</h4>
-        <ul>
-            @foreach (var g in Model.Record.GamingSessions)
-            {
-                <li>@g.Game: @g.StartTime.ToShortTimeString()–@g.EndTime.ToShortTimeString(), With: @string.Join(", ", g.PeoplePlayedWith) <em>@g.Note</em></li>
-            }
-        </ul>
-
-        <h4>Piano @if(Model.AllowEdit){<button onclick="openModal('NewGenericActivityRecord', 'AddPianoActivity', 'Add Piano Record')" class="btn btn-sm btn-outline-primary">+</button>}</h4>
-        <ul>
-            @foreach (var p in Model.Record.PianoRecords)
-            {
-                <li>@p.StartTime.ToShortTimeString()–@p.EndTime.ToShortTimeString(): @p.Activity <em>@p.Note</em></li>
-            }
-        </ul>
-
-        <h4>Chores @if(Model.AllowEdit){<button onclick="openModal('NewGenericActivityRecord', 'AddChoreActivity', 'Add Chore Record')" class="btn btn-sm btn-outline-primary">+</button>}</h4>
-        <ul>
-            @foreach (var c in Model.Record.ChoreActivities)
-            {
-                <li>@c.StartTime.ToShortTimeString()–@c.EndTime.ToShortTimeString(): @c.Activity <em>@c.Note</em></li>
-            }
-        </ul>
-
-        <h4>Chat with GPT @if(Model.AllowEdit){<button onclick="openModal('NewGenericActivityRecord', 'AddGptChatActivity', 'Add GptChat Record')" class="btn btn-sm btn-outline-primary">+</button>}</h4>
-        <ul>
-            @foreach (var chat in Model.Record.GptChatActivities)
-            {
-                <li>@chat.StartTime.ToShortTimeString()–@chat.EndTime.ToShortTimeString(): @chat.Activity <em>@chat.Note</em></li>
-            }
-        </ul>
-
-        <h4>Other @if(Model.AllowEdit){<button onclick="openModal('NewGenericActivityRecord', 'AddOtherActivity', 'Add Other Activity Record')" class="btn btn-sm btn-outline-primary">+</button>}</h4>
-        <ul>
-            @foreach (var o in Model.Record.OtherActivities)
-            {
-                <li>@o.StartTime.ToShortTimeString()–@o.EndTime.ToShortTimeString(): @o.Activity <em>@o.Note</em></li>
-            }
-        </ul>
+        @Html.Partial("~/Views/Partials/RecordDisplays/AiRecordDisplay.cshtml", new AiRecordDisplayViewModel(Model.AllowEdit, Model.Record.AiDailyOverview))
+        @Html.Partial("~/Views/Partials/RecordDisplays/NoteRecordsDisplay.cshtml", new NoteRecordsDisplayViewModel("Mood Notes", "AddMoodNote", "Add Mood Note", Model.AllowEdit, Model.Record.MoodNotes))
+        @Html.Partial("~/Views/Partials/RecordDisplays/NoteRecordsDisplay.cshtml", new NoteRecordsDisplayViewModel("Context Notes", "AddContextNote", "Add Context Note", Model.AllowEdit, Model.Record.ContextNotes))
+        @Html.Partial("~/Views/Partials/RecordDisplays/SleepRecordsDisplay.cshtml", new SleepRecordsDisplayViewModel(Model.AllowEdit, Model.Record.SleepRecords))
+        @Html.Partial("~/Views/Partials/RecordDisplays/HygeineRecordDisplay.cshtml", new HygeineRecordDisplayViewModel(Model.AllowEdit, Model.Record.Hygeine))
+        @Html.Partial("~/Views/Partials/RecordDisplays/FoodRecordsDisplay.cshtml", new FoodRecordsDisplayViewModel(Model.AllowEdit, Model.Record.FoodRecords))
+        @Html.Partial("~/Views/Partials/RecordDisplays/DrinkRecordsDisplay.cshtml", new DrinkRecordsDisplayViewModel(Model.AllowEdit, Model.Record.DrinkRecords))
+        @Html.Partial("~/Views/Partials/RecordDisplays/WorkRecordDisplay.cshtml", new WorkRecordDisplayViewModel(Model.AllowEdit, Model.Record.WorkDayRecord))
+        @Html.Partial("~/Views/Partials/RecordDisplays/ExerciseRecordsDisplay.cshtml", new ExerciseRecordsDisplayViewModel(Model.AllowEdit, Model.Record.ExerciseSessions))
+        @Html.Partial("~/Views/Partials/RecordDisplays/GamingRecordsDisplay.cshtml", new GamingRecordsDisplayViewModel(Model.AllowEdit, Model.Record.GamingSessions))
+        @Html.Partial("~/Views/Partials/RecordDisplays/GenericActivityRecordsDisplay.cshtml", new GenericActivityRecordsDisplayViewModel("Piano", "AddPianoActivity", "Add Piano Record", Model.AllowEdit, Model.Record.PianoRecords))
+        @Html.Partial("~/Views/Partials/RecordDisplays/GenericActivityRecordsDisplay.cshtml", new GenericActivityRecordsDisplayViewModel("Chores", "AddChoreActivity", "Add Chore Record", Model.AllowEdit, Model.Record.ChoreActivities))
+        @Html.Partial("~/Views/Partials/RecordDisplays/GenericActivityRecordsDisplay.cshtml", new GenericActivityRecordsDisplayViewModel("Chat with GPT", "AddGptChatActivity", "Add GptChat Record", Model.AllowEdit, Model.Record.GptChatActivities))
+        @Html.Partial("~/Views/Partials/RecordDisplays/GenericActivityRecordsDisplay.cshtml", new GenericActivityRecordsDisplayViewModel("Other", "AddOtherActivity", "Add Other Activity Record", Model.AllowEdit, Model.Record.OtherActivities))
     </div>
 </div>
 

@@ -1,0 +1,15 @@
+<!-- #region NoteRecordModal.cshtml -->
+<div id="WorkLocationAndHoursModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h3 id="WorkLocationAndHoursModalTitle">Add Mood Note</h3>
+    <form id="WorkLocationAndHoursForm" method="post">
+      @Html.Partial("~/Views/Partials/Forms/InputFields/TextInput.cshtml", new GenericInputViewModel("workLocation", "Location:"))
+      <br/>
+      @Html.Partial("~/Views/Partials/Forms/InputFields/CheckboxInput.cshtml", new GenericInputViewModel("overrideHours", "Override Hours:"))
+      <br/>
+      @Html.Partial("~/Views/Partials/Forms/InputFields/DecimalInput.cshtml", new GenericInputViewModel("workHours", "Hours Working:"))
+      <br/>
+      @Html.Partial("~/Views/Partials/Forms/InputFields/AddOrCloseButtons.cshtml", new AddOrCloseButtonsViewModel("WorkLocationAndHoursModal"))
+    </form>
+  </div>
+</div>

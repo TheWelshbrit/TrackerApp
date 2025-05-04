@@ -1,0 +1,9 @@
+@model Tracker.Web.ViewModels.Partials.RecordDisplays.DrinkRecordsDisplayViewModel
+
+<h4>Drinks @if(Model.AllowEdit){<button onclick="openModal('NewDrinkRecord', 'AddDrinkRecord', 'Add Drink Record')" class="btn btn-sm btn-outline-primary">+</button>}</h4>
+<ul>
+    @foreach (var d in Model.DrinkRecords)
+    {
+        <li>@d.TimeStartedDrinking?.ToShortTimeString(): @d.Drink, @d.Quantity @d.QuantityMeasurement (@(d.Alcoholic ? $"Alcohol: {d.AlcoholPercentage}%" : "Non-alcoholic")) <em>@d.Note</em></li>
+    }
+</ul>

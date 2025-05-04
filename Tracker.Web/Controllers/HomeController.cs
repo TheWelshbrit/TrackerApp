@@ -90,7 +90,40 @@ public class HomeController : Controller
         _repo.UpdateDayInProgress(current);
         return RedirectToAction("Index");
     }
+    
+    [HttpPost]
+    public IActionResult UpdateAiRecord(string note, string quote)
+    {
+        var current = _repo.GetDayInProgress();
 
+        current.AiDailyOverview.AiQuote = quote;
+        current.AiDailyOverview.AiNote = note;
+        current.AiDailyOverview.TimeAiContributionGenerated = DateTime.Now;
+        
+        _repo.UpdateDayInProgress(current);
+        return RedirectToAction("Index");
+    }
+
+    [HttpPost]
+    public IActionResult UpdateWorkLocationAndHours(string workLocation, decimal workHours, string overrideHours)
+    {
+        var current = _repo.GetDayInProgress();
+
+        current.WorkDayRecord.Location = workLocation;
+        if (overrideHours == "on")
+        {
+            current.WorkDayRecord.HoursOverridden = true;
+            current.WorkDayRecord.TotalHours = workHours;
+        }
+        else
+        {
+            current.WorkDayRecord.HoursOverridden = false;
+            current.WorkDayRecord.TotalHours = (decimal)current.WorkDayRecord.WorkActivities.Sum(activity => (activity.EndTime - activity.StartTime).TotalHours);
+        }
+        
+        _repo.UpdateDayInProgress(current);
+        return RedirectToAction("Index");
+    }
         
     [HttpPost]
     public IActionResult AddHygeineNote(string noteText, DateTime noteTime)
@@ -113,6 +146,21 @@ public class HomeController : Controller
         var current = _repo.GetDayInProgress();
 
         current.ContextNotes.Add(new NoteRecord
+        {
+            Note = noteText,
+            TimeNoteMade = noteTime
+        });
+
+        _repo.UpdateDayInProgress(current);
+        return RedirectToAction("Index");
+    }
+
+    [HttpPost]
+    public IActionResult AddWorkNote(string noteText, DateTime noteTime)
+    {
+        var current = _repo.GetDayInProgress();
+
+        current.WorkDayRecord.OverallNotes.Add(new NoteRecord
         {
             Note = noteText,
             TimeNoteMade = noteTime
@@ -225,7 +273,7 @@ public class HomeController : Controller
     {
         var current = _repo.GetDayInProgress();
 
-        current.ExerciseSessions.Add(new ExcerciseRecord
+        current.ExerciseSessions.Add(new ExerciseRecord
         {
             StartTime = startExcerciseTime,
             EndTime = endExcerciseTime,
@@ -248,6 +296,11 @@ public class HomeController : Controller
         var current = _repo.GetDayInProgress();
 
         current.WorkDayRecord.WorkActivities.Add(NewGenericActivity(activityText, startTime, endTime, note));
+
+        if(!current.WorkDayRecord.HoursOverridden)
+        {
+            current.WorkDayRecord.TotalHours = (decimal)current.WorkDayRecord.WorkActivities.Sum(activity => (activity.EndTime - activity.StartTime).TotalHours);
+        }
 
         _repo.UpdateDayInProgress(current);
         return RedirectToAction("Index");

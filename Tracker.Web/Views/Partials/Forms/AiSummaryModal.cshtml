@@ -1,0 +1,13 @@
+<!-- #region NoteRecordModal.cshtml -->
+<div id="AiSummaryModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h3 id="AiSummaryModalTitle">Add Mood Note</h3>
+    <form id="AiSummaryForm" method="post">
+      @Html.Partial("~/Views/Partials/Forms/InputFields/TextInput.cshtml", new GenericInputViewModel("quote", "AI Quote:"))
+      <br/>
+      @Html.Partial("~/Views/Partials/Forms/InputFields/TextInput.cshtml", new GenericInputViewModel("note", "AI Note:"))
+      <br/>
+      @Html.Partial("~/Views/Partials/Forms/InputFields/AddOrCloseButtons.cshtml", new AddOrCloseButtonsViewModel("AiSummaryModal"))
+    </form>
+  </div>
+</div>
